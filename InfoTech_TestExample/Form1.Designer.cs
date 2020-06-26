@@ -28,6 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
+            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Узел0");
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.CreateFolderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.DeleteFolderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -38,17 +40,18 @@
             this.treeView1 = new System.Windows.Forms.TreeView();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.button1 = new System.Windows.Forms.Button();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.button2 = new System.Windows.Forms.Button();
             this.postgresDataSet1 = new InfoTech_TestExample.postgresDataSet();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.menuStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.postgresDataSet1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.postgresDataSet1)).BeginInit();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -108,8 +111,14 @@
             this.treeView1.Dock = System.Windows.Forms.DockStyle.Left;
             this.treeView1.Location = new System.Drawing.Point(0, 24);
             this.treeView1.Name = "treeView1";
+            treeNode1.Name = "Узел0";
+            treeNode1.Text = "Узел0";
+            treeNode1.ToolTipText = "1231";
+            this.treeView1.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
+            treeNode1});
             this.treeView1.Size = new System.Drawing.Size(155, 426);
             this.treeView1.TabIndex = 1;
+            this.treeView1.NodeMouseHover += new System.Windows.Forms.TreeNodeMouseHoverEventHandler(this.treeView1_NodeMouseHover);
             // 
             // tabControl1
             // 
@@ -131,6 +140,14 @@
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "tabPage1";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // dataGridView1
+            // 
+            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView1.Location = new System.Drawing.Point(65, 32);
+            this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.Size = new System.Drawing.Size(328, 214);
+            this.dataGridView1.TabIndex = 5;
             // 
             // tabPage2
             // 
@@ -173,14 +190,6 @@
             this.postgresDataSet1.DataSetName = "postgresDataSet";
             this.postgresDataSet1.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema;
             // 
-            // dataGridView1
-            // 
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(65, 32);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.Size = new System.Drawing.Size(328, 214);
-            this.dataGridView1.TabIndex = 5;
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -199,8 +208,8 @@
             this.menuStrip1.PerformLayout();
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.postgresDataSet1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.postgresDataSet1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -224,6 +233,7 @@
         private System.Windows.Forms.Button button2;
         private postgresDataSet postgresDataSet1;
         private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.ToolTip toolTip1;
     }
 }
 

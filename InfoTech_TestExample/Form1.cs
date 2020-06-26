@@ -20,7 +20,8 @@ namespace InfoTech_TestExample
         const string quote = "\u0022";
         string ConnectionString = "Dsn=PostgreSQL35W;database=postgres;server=localhost;port=5432;uid=postgres;sslmode=disable;readonly=0;protocol=7.4;fakeoidindex=0;showoidcolumn=0;rowversioning=0;showsystemtables=0;fetch=100;unknownsizes=0;maxvarcharsize=255;maxlongvarcharsize=8190;debug=0;commlog=0;usedeclarefetch=0;textaslongvarchar=1;unknownsaslongvarchar=0;boolsaschar=1;parse=0;lfconversion=1;updatablecursors=1;trueisminus1=0;bi=0;byteaaslongvarbinary=1;useserversideprepare=1;lowercaseidentifier=0;d6=-101;optionalerrors=0;xaopt=1";
 
-       //string ConnectionString = "database=postgres;server=localhost;port=5432;uid=postgres;sslmode=disable;readonly=0;protocol=7.4;fakeoidindex=0;showoidcolumn=0;rowversioning=0;showsystemtables=0;fetch=100;unknownsizes=0;maxvarcharsize=255;maxlongvarcharsize=8190;debug=0;commlog=0;usedeclarefetch=0;textaslongvarchar=1;unknownsaslongvarchar=0;boolsaschar=1;parse=0;lfconversion=1;updatablecursors=1;trueisminus1=0;bi=0;byteaaslongvarbinary=1;useserversideprepare=1;lowercaseidentifier=0;d6=-101;optionalerrors=0;xaopt=1";
+
+        
         public delegate void RefreshEventHandler();
         public event RefreshEventHandler RefreshTreeView;
 
@@ -92,6 +93,7 @@ namespace InfoTech_TestExample
                     AskFolderByParentFolderID(NewIDs[i], connection);
                     AskFileByParentFolderID(NewIDs[i], connection);
                 }
+            reader.Close();
 
         }
 
@@ -102,8 +104,6 @@ namespace InfoTech_TestExample
         /// <param name="connection">Строка подключения</param>
         private void AskFileByParentFolderID(string FolderID, OdbcConnection connection)
         {
-            
-            
             string CommandText = 
                 $"SELECT {quote}FileID{quote},{quote}Caption{quote},{quote}Description{quote}"+
                 $"  FROM public.{quote}Files{quote}" +
@@ -119,15 +119,13 @@ namespace InfoTech_TestExample
 
             while (reader.Read())
             {
-
-
                 string ID = (Convert.ToString((int)reader.GetValue(0)));
                 string Name = (string)reader.GetValue(1);
                 string Description = (string)reader.GetValue(2);
 
                 AddFileNode(FolderID, ID, Name,Description);
             }
-
+            reader.Close();
         }
 
 
@@ -175,16 +173,69 @@ namespace InfoTech_TestExample
                 treeView1.Nodes.Find($"Folder_{FolderID}", true).First().Nodes.Add($"File_{FileID}", Name);
                 treeView1.Nodes.Find($"File_{FileID}", true).First().ToolTipText = Description;
             }
-            else
+            
+        }
+        public void CreateFolderRecord (string FolderName, string ParentFolderID)
+        {
+            using (OdbcConnection connection = new OdbcConnection(ConnectionString))
             {
-                treeView1.Nodes.Add($"File_{FileID}", Name);
+                //Подключение к БД
+                connection.Open();
+
+                //Запрос нового  ID
+                string CommandText =
+                $"SELECT {quote}FolderID{quote} " +
+                $"FROM public.{quote}Folders{quote}" +
+                $"  ORDER BY {quote}FolderID{quote} DESC ";
+
+                OdbcCommand FolderReaderCommand = new OdbcCommand(CommandText, connection);
+
+                //int RowCounter = AskFolderByParent.ExecuteNonQuery();
+                int NewID = (int)FolderReaderCommand.ExecuteScalar();
+
+                //Размещаем новую запись в БД
+                string InsertText =
+                $"INSERT INTO {quote}Folders{quote} " +
+                $"VALUES ({NewID},{(object)FolderName},{(object)ParentFolderID})";
+
+                OdbcCommand FolderInsertCommand = new OdbcCommand(InsertText, connection);
+
+                int i = FolderInsertCommand.ExecuteNonQuery();
             }
+            RefreshTreeView?.Invoke();
         }
 
-
+        public string GetSelectedNode()
+        {
+            string result = (string)treeView1.SelectedNode.Name;
+            if (result == "") { result = "-1"; }
+            return result;
+        }
         private void CreateFolderToolStripMenuItem_Click(object sender, EventArgs e)
         {
-           // AddFolderByName(10, textBox1.Text);
+            
+            string NodeTag = GetSelectedNode();
+            if (NodeTag.Contains("Folder_"))
+            {
+                NodeTag = NodeTag.Remove(0,7);
+            }
+            else
+            {
+                NodeTag = NodeTag.Remove(0,5);
+            }
+
+            CreateFolderRecord("NewFolder", NodeTag);
+        }
+
+        private void treeView1_NodeMouseHover(object sender, TreeNodeMouseHoverEventArgs e)
+        {
+            try
+            {
+                toolTip1.SetToolTip(treeView1, treeView1.GetNodeAt(MousePosition).ToolTipText);
+                toolTip1.InitialDelay = 0;
+
+            }
+            catch (Exception) { }
         }
     }
 }
