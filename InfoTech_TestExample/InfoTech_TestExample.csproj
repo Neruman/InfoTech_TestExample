@@ -51,11 +51,17 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ContentDBDataSet.xsd</DependentUpon>
     </Compile>
-    <Compile Include="DialogForms\Form1.cs">
+    <Compile Include="DialogForms\DeleteDialogForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="DialogForms\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="DialogForms\DeleteDialogForm.Designer.cs">
+      <DependentUpon>DeleteDialogForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DialogForms\RenameForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DialogForms\RenameForm.Designer.cs">
+      <DependentUpon>RenameForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
@@ -73,8 +79,11 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="DialogForms\Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <EmbeddedResource Include="DialogForms\DeleteDialogForm.resx">
+      <DependentUpon>DeleteDialogForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DialogForms\RenameForm.resx">
+      <DependentUpon>RenameForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>

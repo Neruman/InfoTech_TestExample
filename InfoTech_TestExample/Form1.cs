@@ -17,7 +17,7 @@ namespace InfoTech_TestExample
 
     public partial class Form1 : Form
     {
-        const string quote = "\u0022";
+        public const string quote = "\u0022";
         string ConnectionString = "Dsn=PostgreSQL35W;database=postgres;server=localhost;port=5432;uid=postgres;sslmode=disable;readonly=0;protocol=7.4;fakeoidindex=0;showoidcolumn=0;rowversioning=0;showsystemtables=0;fetch=100;unknownsizes=0;maxvarcharsize=255;maxlongvarcharsize=8190;debug=0;commlog=0;usedeclarefetch=0;textaslongvarchar=1;unknownsaslongvarchar=0;boolsaschar=1;parse=0;lfconversion=1;updatablecursors=1;trueisminus1=0;bi=0;byteaaslongvarbinary=1;useserversideprepare=1;lowercaseidentifier=0;d6=-101;optionalerrors=0;xaopt=1";
 
 
@@ -34,6 +34,10 @@ namespace InfoTech_TestExample
             RefreshTreeView?.Invoke();
         }
 
+        public void AskRefresh()
+        {
+            RefreshTreeView?.Invoke();
+        }
         /// <summary>
         /// Метод отрисовки иерархии файлов
         /// </summary>
@@ -159,7 +163,13 @@ namespace InfoTech_TestExample
             }        
         }
 
-
+        /// <summary>
+        /// Метод добавления нового узла файла
+        /// </summary>
+        /// <param name="FolderID">Родительская папка</param>
+        /// <param name="FileID">Код файла</param>
+        /// <param name="Name">Имя файла</param>
+        /// <param name="Description">Всплывающая подсказка</param>
         public void AddFileNode(string FolderID, string FileID, string Name, string Description)
         {
             //Проверка на уникальность ключа (номер файла)
@@ -175,6 +185,12 @@ namespace InfoTech_TestExample
             }
             
         }
+
+        /// <summary>
+        /// Создание новой папки в БД
+        /// </summary>
+        /// <param name="FolderName">Имя новой папки</param>
+        /// <param name="ParentFolderID">Родительская папка</param>
         public void CreateFolderRecord (string FolderName, string ParentFolderID)
         {
             using (OdbcConnection connection = new OdbcConnection(ConnectionString))
@@ -204,14 +220,84 @@ namespace InfoTech_TestExample
             }
             RefreshTreeView?.Invoke();
         }
+        /// <summary>
+        /// Переименование выбранной папки
+        /// </summary>
+        /// <param name="NewName">Новое имя</param>
+        public void RenameFolder (string NewName)
+        {
+            //using (OdbcConnection connection = new OdbcConnection(ConnectionString))
+            //{
+            //    //Подключение к БД
+            //    connection.Open();
 
+            //    //Изменяем название папки с 
+            //    string CommandText =
+            //    $"UPDATE public.{quote}Folders{quote}" +
+            //    $"SET {quote}FolderName{quote} = '{NewName}'" +
+            //    $"  WHERE {quote}FolderID{quote} = {Convert.ToInt32(AskNodeFolderID())}";
+
+            //    OdbcCommand FolderReaderCommand = new OdbcCommand(CommandText, connection);
+            //    object i = FolderReaderCommand.ExecuteNonQuery();
+            //}
+            //RefreshTreeView?.Invoke();
+            //DialogForms.RenameForm askForm = new DialogForms.RenameForm(ConnectionString, AskNodeFolderID(), "Folder", this);
+            
+        }
+
+        public void DeleteFolder()
+        {
+            string CommandText =
+                $"DELETE FROM public.{quote}Folders{quote}" +
+                $"  WHERE {quote}FolderID{quote} = {Convert.ToInt32(AskNodeFolderID())}";
+            DialogForms.DeleteForm DeleteThisFolderForm = new DialogForms.DeleteForm(ConnectionString, CommandText, this);
+         }
+
+        public void DeleteFile()
+        {
+            string CommandText =
+                $"DELETE FROM public.{quote}Files{quote} " +
+                $"WHERE {quote}FileID{quote} = {Convert.ToInt32(AskNodeFileID())}";
+            DialogForms.DeleteForm DeleteThisFolderForm = new DialogForms.DeleteForm(ConnectionString, CommandText, this);
+
+            //using (OdbcConnection connection = new OdbcConnection(ConnectionString))
+            //{
+            //    //Подключение к БД
+            //    connection.Open();
+
+            //    //Изменяем название папки с 
+            //    string CommandText =
+            //    $"DELETE FROM public.{quote}Folders{quote}" +
+            //    $"  WHERE {quote}FolderID{quote} = {Convert.ToInt32(AskNodeFolderID())}";
+
+            //    OdbcCommand FolderReaderCommand = new OdbcCommand(CommandText, connection);
+            //    object i = FolderReaderCommand.ExecuteNonQuery();
+
+            //    DialogForms.DeleteForm DeleteThisFolderForm = new DialogForms.DeleteForm(ConnectionString, CommandText, this);
+
+            //}
+        }
+        /// <summary>
+        /// Определяем номер выделенного узла в TreeView
+        /// </summary>
+        /// <returns></returns>
         public string GetSelectedNode()
         {
-            string result = (string)treeView1.SelectedNode.Name;
-            if (result == "") { result = "-1"; }
-            return result;
+            try
+            {
+                return (string)treeView1.SelectedNode.Name;
+            }
+            catch
+            {
+                return "-1";
+            }
         }
-        public string GetSelectedFolderID()
+
+        /// <summary>
+        /// Определяем номер папки по выделенному узлу в TreeView. Если выбран файл, выводится ID его папки-контейнера
+        /// </summary>
+        /// <returns></returns>
+        public string AskContainerFolderID()
         {
             string NodeTag = GetSelectedNode();
             if (NodeTag.Contains("Folder_"))    //если выделен узел с папкой, то выдаём ID папки
@@ -240,10 +326,36 @@ namespace InfoTech_TestExample
             }
             return NodeTag;
         }
+        /// <summary>
+        /// Выводит номер папки или пустую строку, если это не папка
+        /// </summary>
+        /// <returns></returns>
+        public string AskNodeFolderID()
+        {
+            string NodeTag = GetSelectedNode();
+            if (NodeTag.Contains("Folder_"))    //если выделен узел с папкой, то выдаём ID папки
+            {
+                NodeTag = NodeTag.Remove(0, 7);
+            }
+            return NodeTag;
+        }
+        /// <summary>
+        /// Определяем номер файла или пустую строку, если это не файл
+        /// </summary>
+        /// <returns></returns>
+        public string AskNodeFileID()
+        {
+            string NodeTag = GetSelectedNode();
+            if (NodeTag.Contains("File_"))    //если выделен узел с папкой, то выдаём ID папки
+            { 
+                NodeTag = NodeTag.Remove(0, 5);  //если выделен узел с файлом, то выдаём папку,в которой он находится
+            }
+            return NodeTag;
+        }
 
         private void CreateFolderToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            CreateFolderRecord("NewFolder", GetSelectedFolderID());
+            CreateFolderRecord("NewFolder", AskContainerFolderID());
         }
 
         private void treeView1_NodeMouseHover(object sender, TreeNodeMouseHoverEventArgs e)
@@ -256,5 +368,18 @@ namespace InfoTech_TestExample
             }
             catch (Exception) { }
         }
+
+        private void renameToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            
+            if (GetSelectedNode().Contains("Folder_")   == true)  { DialogForms.RenameForm askForm = new DialogForms.RenameForm(ConnectionString, AskNodeFolderID(), "Folder",  this); }
+            if (GetSelectedNode().Contains("File_")     == true)  { DialogForms.RenameForm askForm = new DialogForms.RenameForm(ConnectionString, AskNodeFileID(),   "File",    this); }
+        }
+
+        private void DeleteFolderToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (GetSelectedNode().Contains("Folder_") == true)  { DeleteFolder(); }
+            if (GetSelectedNode().Contains("File_") == true)    { DeleteFile(); }
+        }   
     }
 }

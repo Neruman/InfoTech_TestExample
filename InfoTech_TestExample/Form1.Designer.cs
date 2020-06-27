@@ -29,14 +29,13 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Узел0");
+            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Узел0");
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.CreateFolderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.DeleteFolderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.downloadFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.DeleteFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.renameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.RenameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.treeView1 = new System.Windows.Forms.TreeView();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
@@ -59,10 +58,9 @@
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.CreateFolderToolStripMenuItem,
             this.DeleteFolderToolStripMenuItem,
+            this.RenameToolStripMenuItem,
             this.loadFileToolStripMenuItem,
-            this.downloadFileToolStripMenuItem,
-            this.DeleteFileToolStripMenuItem,
-            this.renameToolStripMenuItem});
+            this.downloadFileToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(800, 24);
@@ -72,15 +70,16 @@
             // CreateFolderToolStripMenuItem
             // 
             this.CreateFolderToolStripMenuItem.Name = "CreateFolderToolStripMenuItem";
-            this.CreateFolderToolStripMenuItem.Size = new System.Drawing.Size(97, 20);
-            this.CreateFolderToolStripMenuItem.Text = "Создать папку";
+            this.CreateFolderToolStripMenuItem.Size = new System.Drawing.Size(136, 20);
+            this.CreateFolderToolStripMenuItem.Text = "Создать новую папку";
             this.CreateFolderToolStripMenuItem.Click += new System.EventHandler(this.CreateFolderToolStripMenuItem_Click);
             // 
             // DeleteFolderToolStripMenuItem
             // 
             this.DeleteFolderToolStripMenuItem.Name = "DeleteFolderToolStripMenuItem";
-            this.DeleteFolderToolStripMenuItem.Size = new System.Drawing.Size(100, 20);
-            this.DeleteFolderToolStripMenuItem.Text = "Удалить Папку";
+            this.DeleteFolderToolStripMenuItem.Size = new System.Drawing.Size(63, 20);
+            this.DeleteFolderToolStripMenuItem.Text = "Удалить";
+            this.DeleteFolderToolStripMenuItem.Click += new System.EventHandler(this.DeleteFolderToolStripMenuItem_Click);
             // 
             // loadFileToolStripMenuItem
             // 
@@ -94,28 +93,23 @@
             this.downloadFileToolStripMenuItem.Size = new System.Drawing.Size(95, 20);
             this.downloadFileToolStripMenuItem.Text = "Скачать файл";
             // 
-            // DeleteFileToolStripMenuItem
+            // RenameToolStripMenuItem
             // 
-            this.DeleteFileToolStripMenuItem.Name = "DeleteFileToolStripMenuItem";
-            this.DeleteFileToolStripMenuItem.Size = new System.Drawing.Size(95, 20);
-            this.DeleteFileToolStripMenuItem.Text = "Удалить файл";
-            // 
-            // renameToolStripMenuItem
-            // 
-            this.renameToolStripMenuItem.Name = "renameToolStripMenuItem";
-            this.renameToolStripMenuItem.Size = new System.Drawing.Size(106, 20);
-            this.renameToolStripMenuItem.Text = "Переименовать";
+            this.RenameToolStripMenuItem.Name = "RenameToolStripMenuItem";
+            this.RenameToolStripMenuItem.Size = new System.Drawing.Size(106, 20);
+            this.RenameToolStripMenuItem.Text = "Переименовать";
+            this.RenameToolStripMenuItem.Click += new System.EventHandler(this.renameToolStripMenuItem_Click);
             // 
             // treeView1
             // 
             this.treeView1.Dock = System.Windows.Forms.DockStyle.Left;
             this.treeView1.Location = new System.Drawing.Point(0, 24);
             this.treeView1.Name = "treeView1";
-            treeNode1.Name = "Узел0";
-            treeNode1.Text = "Узел0";
-            treeNode1.ToolTipText = "1231";
+            treeNode2.Name = "Узел0";
+            treeNode2.Text = "Узел0";
+            treeNode2.ToolTipText = "1231";
             this.treeView1.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode1});
+            treeNode2});
             this.treeView1.Size = new System.Drawing.Size(155, 426);
             this.treeView1.TabIndex = 1;
             this.treeView1.NodeMouseHover += new System.Windows.Forms.TreeNodeMouseHoverEventHandler(this.treeView1_NodeMouseHover);
@@ -222,8 +216,7 @@
         private System.Windows.Forms.ToolStripMenuItem DeleteFolderToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem loadFileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem downloadFileToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem DeleteFileToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem renameToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem RenameToolStripMenuItem;
         private System.Windows.Forms.TreeView treeView1;
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPage1;
