@@ -191,12 +191,12 @@ namespace InfoTech_TestExample
                 OdbcCommand FolderReaderCommand = new OdbcCommand(CommandText, connection);
 
                 //int RowCounter = AskFolderByParent.ExecuteNonQuery();
-                int NewID = (int)FolderReaderCommand.ExecuteScalar();
+                int NewID = (int)FolderReaderCommand.ExecuteScalar()+1;
 
                 //Размещаем новую запись в БД
                 string InsertText =
-                $"INSERT INTO {quote}Folders{quote} " +
-                $"VALUES ({NewID},{(object)FolderName},{(object)ParentFolderID})";
+                $"INSERT INTO {quote}Folders{quote} ({quote}FolderID{quote},{quote}FolderName{quote},{quote}ParentFolderID{quote})" +
+                $"VALUES ({NewID},'''{FolderName}''',{ParentFolderID})";
 
                 OdbcCommand FolderInsertCommand = new OdbcCommand(InsertText, connection);
 
@@ -211,20 +211,39 @@ namespace InfoTech_TestExample
             if (result == "") { result = "-1"; }
             return result;
         }
-        private void CreateFolderToolStripMenuItem_Click(object sender, EventArgs e)
+        public string GetSelectedFolderID()
         {
-            
             string NodeTag = GetSelectedNode();
-            if (NodeTag.Contains("Folder_"))
+            if (NodeTag.Contains("Folder_"))    //если выделен узел с папкой, то выдаём ID папки
             {
-                NodeTag = NodeTag.Remove(0,7);
+                NodeTag = NodeTag.Remove(0, 7);
             }
             else
             {
-                NodeTag = NodeTag.Remove(0,5);
-            }
+                NodeTag = NodeTag.Remove(0, 5);  //если выделен узел с файлом, то выдаём папку,в которой он находится
+                using (OdbcConnection connection = new OdbcConnection(ConnectionString))
+                {
+                    //Подключение к БД
+                    connection.Open();
 
-            CreateFolderRecord("NewFolder", NodeTag);
+                    //Запрос ID папки, к которой принадлежит выделенный файл
+                    string CommandText =
+                    $"SELECT {quote}FolderID{quote} " +
+                    $"FROM public.{quote}Files{quote}" +
+                    $"  WHERE {quote}FileID{quote} = {Convert.ToInt32(NodeTag)}";
+
+                    OdbcCommand FolderReaderCommand = new OdbcCommand(CommandText, connection);
+                    object FolderID = FolderReaderCommand.ExecuteScalar();
+
+                    NodeTag = Convert.ToString(FolderID);
+                }
+            }
+            return NodeTag;
+        }
+
+        private void CreateFolderToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CreateFolderRecord("NewFolder", GetSelectedFolderID());
         }
 
         private void treeView1_NodeMouseHover(object sender, TreeNodeMouseHoverEventArgs e)
