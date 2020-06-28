@@ -17,7 +17,7 @@ namespace InfoTech_TestExample
 
     public partial class Form1 : Form
     {
-        public const string quote = "\u0022";
+        public const string quote = "\u0022"; //Символ кавычки для упрощения написания запросов к БД
         string ConnectionString = "Dsn=PostgreSQL35W;database=postgres;server=localhost;port=5432;uid=postgres;sslmode=disable;readonly=0;protocol=7.4;fakeoidindex=0;showoidcolumn=0;rowversioning=0;showsystemtables=0;fetch=100;unknownsizes=0;maxvarcharsize=255;maxlongvarcharsize=8190;debug=0;commlog=0;usedeclarefetch=0;textaslongvarchar=1;unknownsaslongvarchar=0;boolsaschar=1;parse=0;lfconversion=1;updatablecursors=1;trueisminus1=0;bi=0;byteaaslongvarbinary=1;useserversideprepare=1;lowercaseidentifier=0;d6=-101;optionalerrors=0;xaopt=1";
 
 
@@ -34,10 +34,14 @@ namespace InfoTech_TestExample
             RefreshTreeView?.Invoke();
         }
 
+        /// <summary>
+        /// Внешний запрос на обновление иерархии файлов
+        /// </summary>
         public void AskRefresh()
         {
             RefreshTreeView?.Invoke();
         }
+        
         /// <summary>
         /// Метод отрисовки иерархии файлов
         /// </summary>
@@ -224,59 +228,23 @@ namespace InfoTech_TestExample
         /// Переименование выбранной папки
         /// </summary>
         /// <param name="NewName">Новое имя</param>
-        public void RenameFolder (string NewName)
-        {
-            //using (OdbcConnection connection = new OdbcConnection(ConnectionString))
-            //{
-            //    //Подключение к БД
-            //    connection.Open();
 
-            //    //Изменяем название папки с 
-            //    string CommandText =
-            //    $"UPDATE public.{quote}Folders{quote}" +
-            //    $"SET {quote}FolderName{quote} = '{NewName}'" +
-            //    $"  WHERE {quote}FolderID{quote} = {Convert.ToInt32(AskNodeFolderID())}";
+        //public void DeleteFolder()
+        //{
+        //    string CommandText =
+        //        $"DELETE FROM public.{quote}Folders{quote}" +
+        //        $"  WHERE {quote}FolderID{quote} = {Convert.ToInt32(AskNodeFolderID())}";
+        //    DialogForms.DeleteForm DeleteThisFolderForm = new DialogForms.DeleteForm(ConnectionString, CommandText, this);
+        // }
 
-            //    OdbcCommand FolderReaderCommand = new OdbcCommand(CommandText, connection);
-            //    object i = FolderReaderCommand.ExecuteNonQuery();
-            //}
-            //RefreshTreeView?.Invoke();
-            //DialogForms.RenameForm askForm = new DialogForms.RenameForm(ConnectionString, AskNodeFolderID(), "Folder", this);
-            
-        }
+        //public void DeleteFile()
+        //{
+        //    string CommandText =
+        //        $"DELETE FROM public.{quote}Files{quote} " +
+        //        $"WHERE {quote}FileID{quote} = {Convert.ToInt32(AskNodeFileID())}";
 
-        public void DeleteFolder()
-        {
-            string CommandText =
-                $"DELETE FROM public.{quote}Folders{quote}" +
-                $"  WHERE {quote}FolderID{quote} = {Convert.ToInt32(AskNodeFolderID())}";
-            DialogForms.DeleteForm DeleteThisFolderForm = new DialogForms.DeleteForm(ConnectionString, CommandText, this);
-         }
-
-        public void DeleteFile()
-        {
-            string CommandText =
-                $"DELETE FROM public.{quote}Files{quote} " +
-                $"WHERE {quote}FileID{quote} = {Convert.ToInt32(AskNodeFileID())}";
-            DialogForms.DeleteForm DeleteThisFolderForm = new DialogForms.DeleteForm(ConnectionString, CommandText, this);
-
-            //using (OdbcConnection connection = new OdbcConnection(ConnectionString))
-            //{
-            //    //Подключение к БД
-            //    connection.Open();
-
-            //    //Изменяем название папки с 
-            //    string CommandText =
-            //    $"DELETE FROM public.{quote}Folders{quote}" +
-            //    $"  WHERE {quote}FolderID{quote} = {Convert.ToInt32(AskNodeFolderID())}";
-
-            //    OdbcCommand FolderReaderCommand = new OdbcCommand(CommandText, connection);
-            //    object i = FolderReaderCommand.ExecuteNonQuery();
-
-            //    DialogForms.DeleteForm DeleteThisFolderForm = new DialogForms.DeleteForm(ConnectionString, CommandText, this);
-
-            //}
-        }
+        //    DialogForms.DeleteForm DeleteThisFolderForm = new DialogForms.DeleteForm(ConnectionString, CommandText, this);
+        //}
         /// <summary>
         /// Определяем номер выделенного узла в TreeView
         /// </summary>
@@ -353,33 +321,83 @@ namespace InfoTech_TestExample
             return NodeTag;
         }
 
+        public string TypeOfSelectedNode()
+        {
+            if (GetSelectedNode().Contains("Folder_"))  { return "Folder"; }
+            if (GetSelectedNode().Contains("File_"))    { return "File"; }
+            return "-1";
+        }
+
         private void CreateFolderToolStripMenuItem_Click(object sender, EventArgs e)
         {
             CreateFolderRecord("NewFolder", AskContainerFolderID());
         }
 
-        private void treeView1_NodeMouseHover(object sender, TreeNodeMouseHoverEventArgs e)
-        {
-            try
-            {
-                toolTip1.SetToolTip(treeView1, treeView1.GetNodeAt(MousePosition).ToolTipText);
-                toolTip1.InitialDelay = 0;
 
-            }
-            catch (Exception) { }
-        }
 
         private void renameToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            
             if (GetSelectedNode().Contains("Folder_")   == true)  { DialogForms.RenameForm askForm = new DialogForms.RenameForm(ConnectionString, AskNodeFolderID(), "Folder",  this); }
             if (GetSelectedNode().Contains("File_")     == true)  { DialogForms.RenameForm askForm = new DialogForms.RenameForm(ConnectionString, AskNodeFileID(),   "File",    this); }
         }
 
         private void DeleteFolderToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (GetSelectedNode().Contains("Folder_") == true)  { DeleteFolder(); }
-            if (GetSelectedNode().Contains("File_") == true)    { DeleteFile(); }
-        }   
+            if (GetSelectedNode().Contains("Folder_") == true)
+            {
+                string CommandText =
+                 $"DELETE FROM public.{quote}Folders{quote}" +
+                 $"  WHERE {quote}FolderID{quote} = {Convert.ToInt32(AskNodeFolderID())}";
+
+                DialogForms.DeleteForm DeleteThisFolderForm = new DialogForms.DeleteForm(ConnectionString, CommandText, this);                ;
+            }
+            if (GetSelectedNode().Contains("File_") == true)
+            {
+                string CommandText =
+                    $"DELETE FROM public.{quote}Files{quote} " +
+                    $"WHERE {quote}FileID{quote} = {Convert.ToInt32(AskNodeFileID())}";
+
+                DialogForms.DeleteForm DeleteThisFolderForm = new DialogForms.DeleteForm(ConnectionString, CommandText, this);
+            }
+        }
+
+        private void treeView1_MouseDown(object sender, MouseEventArgs e)
+        {
+            try
+            {
+
+                TreeViewHitTestInfo info = treeView1.HitTest(e.X, e.Y);
+                TreeNode hitNode;
+                if (info.Node != null)
+                {
+                    hitNode = info.Node;
+
+                    button2.Text = (string)hitNode.ToolTipText;
+                }
+
+            }
+            catch (Exception) { }
+        }
+
+        private void treeView1_MouseHover(object sender, EventArgs e)
+        {
+            TreeViewHitTestInfo info = treeView1.HitTest(Cursor.Position);
+            TreeNode hitNode;
+            if (info.Node != null)
+            {
+                hitNode = info.Node;
+                button2.Text = (string)hitNode.ToolTipText;
+            }
+        }
+
+        private void создатьТипToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DialogForms.CreateTypeForm AskForm = new DialogForms.CreateTypeForm(ConnectionString, this);
+        }
+
+        private void изменитьТипToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DialogForms.ChangeTypeForm AskForm = new DialogForms.ChangeTypeForm(ConnectionString, this);
+        }
     }
 }
