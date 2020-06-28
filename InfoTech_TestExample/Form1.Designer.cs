@@ -131,7 +131,6 @@
             treeNode4});
             this.treeView1.Size = new System.Drawing.Size(155, 426);
             this.treeView1.TabIndex = 1;
-            this.treeView1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.treeView1_MouseDown);
             this.treeView1.MouseHover += new System.EventHandler(this.treeView1_MouseHover);
             // 
             // tabControl1
