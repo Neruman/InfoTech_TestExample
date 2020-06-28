@@ -11,31 +11,41 @@ using System.Data.Odbc;
 
 namespace InfoTech_TestExample.DialogForms
 {
-    public partial class ChangeTypeForm : Form
+    public partial class CreateFileForm : Form
     {
         const string quote = InfoTech_TestExample.Form1.quote;
 
-        string FileString = "";
+        string filestring = "";
+
+        private string selectedTypeID = "0";
+
         private string connectionString;
         public string ConnectionString { get => connectionString; set { connectionString = value; } }
+
+        private string folderID;
+        public string FolderID { get => folderID; set { folderID = value; } }
 
         private Form1 form1;
         public Form1 Form1 { set { form1 = value; } }
 
-        public ChangeTypeForm()
+        public CreateFileForm()
         {
             InitializeComponent();
         }
 
-        public ChangeTypeForm(string _ConnectionString, Form1 form)
+        public CreateFileForm(string _ConnectionString, string _FolderID, Form1 form)
         {
             InitializeComponent();
             ConnectionString = _ConnectionString;
+            FolderID = _FolderID;
             Form1 = form;
             TypeListConfigure();
             this.Show();
         }
 
+        /// <summary>
+        /// Выгружает список доступных расширений из БД
+        /// </summary>
         private void TypeListConfigure()
         {
             comboBox1.Items.Clear();
@@ -65,38 +75,6 @@ namespace InfoTech_TestExample.DialogForms
             comboBox1.SelectedIndex = 0;
         }
 
-        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            using (OdbcConnection connection = new OdbcConnection(ConnectionString))
-            {
-                //Подключение к БД
-                connection.Open();
-
-                //Запрос информации о выбранном типе
-                string CommandText =
-                $"SELECT * " +
-                $"FROM public.{quote}FileTypes{quote}" +
-                $"WHERE {quote}Type{quote} = '{(string)comboBox1.SelectedItem}'" +
-                $"ORDER BY {quote}TypeID{quote} ASC ";
-
-                OdbcCommand FolderReaderCommand = new OdbcCommand(CommandText, connection);
-
-                int ChangedTypeID = (int)FolderReaderCommand.ExecuteScalar();
-
-                OdbcCommand TypeReaderCommand = new OdbcCommand(CommandText, connection);
-
-                //Вывод информации о типе в текстовое поле
-                OdbcDataReader reader = TypeReaderCommand.ExecuteReader();
-                while (reader.Read())
-                {
-                    //название типа
-                    textBox1.Text = (string)reader.GetValue(1);
-                    //строковое представление иконки
-                    textBox2.Text = (string)reader.GetValue(2);
-                }
-                reader.Close();
-            }
-        }
 
         private void button2_Click(object sender, EventArgs e)
         {
@@ -105,6 +83,46 @@ namespace InfoTech_TestExample.DialogForms
 
         private void button1_Click(object sender, EventArgs e)
         {
+            string filestring = "";
+            using (OdbcConnection connection = new OdbcConnection(ConnectionString))
+            {
+                //Подключение к БД
+                connection.Open();
+
+                //Запрос нового  ID
+                string CommandText =
+                $"SELECT {quote}FileID{quote} " +
+                $"FROM public.{quote}Files{quote}" +
+                $"  ORDER BY {quote}FileID{quote} DESC ";
+
+                OdbcCommand IDReaderCommand = new OdbcCommand(CommandText, connection);
+
+                int NewID = (int)IDReaderCommand.ExecuteScalar() + 1;
+
+                //Размещаем новую запись в БД
+                string InsertText =
+                $"INSERT INTO public.{quote}Files{quote} " +
+                $"({quote}FileID{quote},{quote}Caption{quote},{quote}Description{quote},{quote}TypeID{quote}," +
+                $"{quote}FolderID{quote},{quote}Content{quote})" +
+                $"VALUES ({NewID},'{CaptionBox.Text}','{DescriptionBox.Text}','{selectedTypeID}'," +
+                $"'{FolderID}','{filestring}')";
+
+                OdbcCommand FileInsertCommand = new OdbcCommand(InsertText, connection);
+
+                int i = FileInsertCommand.ExecuteNonQuery();
+            }
+            form1.AskRefresh();
+            Close();
+            
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
             using (OdbcConnection connection = new OdbcConnection(ConnectionString))
             {
                 //Подключение к БД
@@ -112,27 +130,14 @@ namespace InfoTech_TestExample.DialogForms
 
                 //Запрос информации о выбранном типе
                 string CommandText =
-                $"SELECT * " +
+                $"SELECT {quote}TypeID{quote} " +
                 $"FROM public.{quote}FileTypes{quote}" +
                 $"WHERE {quote}Type{quote} = '{(string)comboBox1.SelectedItem}'" +
                 $"ORDER BY {quote}TypeID{quote} ASC ";
 
-                OdbcCommand IDReaderCommand = new OdbcCommand(CommandText, connection);
+                OdbcCommand FolderReaderCommand = new OdbcCommand(CommandText, connection);
 
-                int ChangedTypeID = (int)IDReaderCommand.ExecuteScalar();
-
-                //Записываем изменения
-                string ChangeTypeCommand =
-                $"UPDATE public.{quote}FileTypes{quote} " +
-                $"SET {quote}Type{quote}  = '{textBox1.Text}' , {quote}Icon{quote} = '{FileString}'" +
-                $"  WHERE {quote}TypeID{quote} = {ChangedTypeID}";
-
-                OdbcCommand TypeReaderCommand = new OdbcCommand(ChangeTypeCommand, connection);
-                object i = TypeReaderCommand.ExecuteNonQuery();
-
-                //Всё готово. Закрываем диалоговое окно
-                Close();
-                
+                selectedTypeID = Convert.ToString((int)FolderReaderCommand.ExecuteScalar());
             }
         }
     }

@@ -51,6 +51,18 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ContentDBDataSet.xsd</DependentUpon>
     </Compile>
+    <Compile Include="DialogForms\CreateFileForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DialogForms\CreateFileForm.Designer.cs">
+      <DependentUpon>CreateFileForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DialogForms\DeleteTypeForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DialogForms\DeleteTypeForm.Designer.cs">
+      <DependentUpon>DeleteTypeForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="DialogForms\ChangeTypeForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -91,6 +103,12 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="DialogForms\CreateFileForm.resx">
+      <DependentUpon>CreateFileForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DialogForms\DeleteTypeForm.resx">
+      <DependentUpon>DeleteTypeForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="DialogForms\ChangeTypeForm.resx">
       <DependentUpon>ChangeTypeForm.cs</DependentUpon>
     </EmbeddedResource>

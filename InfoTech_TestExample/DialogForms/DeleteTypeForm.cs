@@ -11,7 +11,7 @@ using System.Data.Odbc;
 
 namespace InfoTech_TestExample.DialogForms
 {
-    public partial class ChangeTypeForm : Form
+    public partial class DeleteTypeForm : Form
     {
         const string quote = InfoTech_TestExample.Form1.quote;
 
@@ -22,12 +22,12 @@ namespace InfoTech_TestExample.DialogForms
         private Form1 form1;
         public Form1 Form1 { set { form1 = value; } }
 
-        public ChangeTypeForm()
+        public DeleteTypeForm()
         {
             InitializeComponent();
         }
 
-        public ChangeTypeForm(string _ConnectionString, Form1 form)
+        public DeleteTypeForm(string _ConnectionString, Form1 form)
         {
             InitializeComponent();
             ConnectionString = _ConnectionString;
@@ -121,10 +121,9 @@ namespace InfoTech_TestExample.DialogForms
 
                 int ChangedTypeID = (int)IDReaderCommand.ExecuteScalar();
 
-                //Записываем изменения
+                //удаляем выбранный тип
                 string ChangeTypeCommand =
-                $"UPDATE public.{quote}FileTypes{quote} " +
-                $"SET {quote}Type{quote}  = '{textBox1.Text}' , {quote}Icon{quote} = '{FileString}'" +
+                $"DELETE FROM public.{quote}FileTypes " +
                 $"  WHERE {quote}TypeID{quote} = {ChangedTypeID}";
 
                 OdbcCommand TypeReaderCommand = new OdbcCommand(ChangeTypeCommand, connection);

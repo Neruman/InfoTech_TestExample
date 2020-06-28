@@ -61,7 +61,7 @@ namespace InfoTech_TestExample.DialogForms
 
                 //Размещаем новую запись в БД
                 string InsertText =
-                $"INSERT INTO {quote}TypeID{quote} ({quote}TypeID{quote},{quote}Type{quote},{quote}Icon{quote})" +
+                $"INSERT INTO public.{quote}Types{quote} ({quote}TypeID{quote},{quote}Type{quote},{quote}Icon{quote})" +
                 $"VALUES ({NewID},'''{textBox1.Text}''',{filestring})";
 
                 OdbcCommand FolderInsertCommand = new OdbcCommand(InsertText, connection);

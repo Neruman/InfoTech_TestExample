@@ -18,7 +18,7 @@ namespace InfoTech_TestExample
     public partial class Form1 : Form
     {
         public const string quote = "\u0022"; //Символ кавычки для упрощения написания запросов к БД
-        string ConnectionString = "Dsn=PostgreSQL35W;database=postgres;server=localhost;port=5432;uid=postgres;sslmode=disable;readonly=0;protocol=7.4;fakeoidindex=0;showoidcolumn=0;rowversioning=0;showsystemtables=0;fetch=100;unknownsizes=0;maxvarcharsize=255;maxlongvarcharsize=8190;debug=0;commlog=0;usedeclarefetch=0;textaslongvarchar=1;unknownsaslongvarchar=0;boolsaschar=1;parse=0;lfconversion=1;updatablecursors=1;trueisminus1=0;bi=0;byteaaslongvarbinary=1;useserversideprepare=1;lowercaseidentifier=0;d6=-101;optionalerrors=0;xaopt=1";
+        private const string ConnectionString = "Dsn=PostgreSQL35W;database=postgres;server=localhost;port=5432;uid=postgres;sslmode=disable;readonly=0;protocol=7.4;fakeoidindex=0;showoidcolumn=0;rowversioning=0;showsystemtables=0;fetch=100;unknownsizes=0;maxvarcharsize=255;maxlongvarcharsize=8190;debug=0;commlog=0;usedeclarefetch=0;textaslongvarchar=1;unknownsaslongvarchar=0;boolsaschar=1;parse=0;lfconversion=1;updatablecursors=1;trueisminus1=0;bi=0;byteaaslongvarbinary=1;useserversideprepare=1;lowercaseidentifier=0;d6=-101;optionalerrors=0;xaopt=1";
 
 
         
@@ -60,6 +60,7 @@ namespace InfoTech_TestExample
                 //Отрисовка всех вложенных папок, начиная с Root
                 AskFolderByParentFolderID("-1",connection);
             }
+            treeView1.Nodes[0].Checked = true;
         }
         /// <summary>
         /// Последовательный поиск всех вложенных папок для их отображения в иерархии файлов
@@ -229,22 +230,6 @@ namespace InfoTech_TestExample
         /// </summary>
         /// <param name="NewName">Новое имя</param>
 
-        //public void DeleteFolder()
-        //{
-        //    string CommandText =
-        //        $"DELETE FROM public.{quote}Folders{quote}" +
-        //        $"  WHERE {quote}FolderID{quote} = {Convert.ToInt32(AskNodeFolderID())}";
-        //    DialogForms.DeleteForm DeleteThisFolderForm = new DialogForms.DeleteForm(ConnectionString, CommandText, this);
-        // }
-
-        //public void DeleteFile()
-        //{
-        //    string CommandText =
-        //        $"DELETE FROM public.{quote}Files{quote} " +
-        //        $"WHERE {quote}FileID{quote} = {Convert.ToInt32(AskNodeFileID())}";
-
-        //    DialogForms.DeleteForm DeleteThisFolderForm = new DialogForms.DeleteForm(ConnectionString, CommandText, this);
-        //}
         /// <summary>
         /// Определяем номер выделенного узла в TreeView
         /// </summary>
@@ -361,32 +346,14 @@ namespace InfoTech_TestExample
             }
         }
 
-        private void treeView1_MouseDown(object sender, MouseEventArgs e)
-        {
-            try
-            {
 
-                TreeViewHitTestInfo info = treeView1.HitTest(e.X, e.Y);
-                TreeNode hitNode;
-                if (info.Node != null)
-                {
-                    hitNode = info.Node;
-
-                    button2.Text = (string)hitNode.ToolTipText;
-                }
-
-            }
-            catch (Exception) { }
-        }
 
         private void treeView1_MouseHover(object sender, EventArgs e)
         {
-            TreeViewHitTestInfo info = treeView1.HitTest(Cursor.Position);
-            TreeNode hitNode;
+            TreeViewHitTestInfo info = treeView1.HitTest(MousePosition.X-62,MousePosition.Y-109);
             if (info.Node != null)
             {
-                hitNode = info.Node;
-                button2.Text = (string)hitNode.ToolTipText;
+                toolTip1.SetToolTip(treeView1, info.Node.ToolTipText);
             }
         }
 
@@ -398,6 +365,11 @@ namespace InfoTech_TestExample
         private void изменитьТипToolStripMenuItem_Click(object sender, EventArgs e)
         {
             DialogForms.ChangeTypeForm AskForm = new DialogForms.ChangeTypeForm(ConnectionString, this);
+        }
+
+        private void loadFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DialogForms.CreateFileForm AskForm = new DialogForms.CreateFileForm(ConnectionString, AskContainerFolderID(), this);
         }
     }
 }

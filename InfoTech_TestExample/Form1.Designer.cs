@@ -29,13 +29,15 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("Узел0");
+            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Узел0");
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.CreateFolderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.DeleteFolderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.RenameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.downloadFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.создатьТипToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.изменитьТипToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.treeView1 = new System.Windows.Forms.TreeView();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
@@ -46,8 +48,6 @@
             this.button2 = new System.Windows.Forms.Button();
             this.postgresDataSet1 = new InfoTech_TestExample.postgresDataSet();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.создатьТипToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.изменитьТипToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -95,8 +95,9 @@
             // loadFileToolStripMenuItem
             // 
             this.loadFileToolStripMenuItem.Name = "loadFileToolStripMenuItem";
-            this.loadFileToolStripMenuItem.Size = new System.Drawing.Size(105, 20);
-            this.loadFileToolStripMenuItem.Text = "Загрузить файл";
+            this.loadFileToolStripMenuItem.Size = new System.Drawing.Size(132, 20);
+            this.loadFileToolStripMenuItem.Text = "Загрузить файл в БД";
+            this.loadFileToolStripMenuItem.Click += new System.EventHandler(this.loadFileToolStripMenuItem_Click);
             // 
             // downloadFileToolStripMenuItem
             // 
@@ -104,16 +105,30 @@
             this.downloadFileToolStripMenuItem.Size = new System.Drawing.Size(95, 20);
             this.downloadFileToolStripMenuItem.Text = "Скачать файл";
             // 
+            // создатьТипToolStripMenuItem
+            // 
+            this.создатьТипToolStripMenuItem.Name = "создатьТипToolStripMenuItem";
+            this.создатьТипToolStripMenuItem.Size = new System.Drawing.Size(84, 20);
+            this.создатьТипToolStripMenuItem.Text = "Создать тип";
+            this.создатьТипToolStripMenuItem.Click += new System.EventHandler(this.создатьТипToolStripMenuItem_Click);
+            // 
+            // изменитьТипToolStripMenuItem
+            // 
+            this.изменитьТипToolStripMenuItem.Name = "изменитьТипToolStripMenuItem";
+            this.изменитьТипToolStripMenuItem.Size = new System.Drawing.Size(95, 20);
+            this.изменитьТипToolStripMenuItem.Text = "Изменить тип";
+            this.изменитьТипToolStripMenuItem.Click += new System.EventHandler(this.изменитьТипToolStripMenuItem_Click);
+            // 
             // treeView1
             // 
             this.treeView1.Dock = System.Windows.Forms.DockStyle.Left;
             this.treeView1.Location = new System.Drawing.Point(0, 24);
             this.treeView1.Name = "treeView1";
-            treeNode7.Name = "Узел0";
-            treeNode7.Text = "Узел0";
-            treeNode7.ToolTipText = "1231";
+            treeNode4.Name = "Узел0";
+            treeNode4.Text = "Узел0";
+            treeNode4.ToolTipText = "1231";
             this.treeView1.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode7});
+            treeNode4});
             this.treeView1.Size = new System.Drawing.Size(155, 426);
             this.treeView1.TabIndex = 1;
             this.treeView1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.treeView1_MouseDown);
@@ -123,10 +138,10 @@
             // 
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
-            this.tabControl1.Location = new System.Drawing.Point(161, 90);
+            this.tabControl1.Location = new System.Drawing.Point(161, 59);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(473, 348);
+            this.tabControl1.Size = new System.Drawing.Size(473, 379);
             this.tabControl1.TabIndex = 2;
             // 
             // tabPage1
@@ -135,7 +150,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(465, 322);
+            this.tabPage1.Size = new System.Drawing.Size(465, 353);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "tabPage1";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -160,7 +175,7 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(531, 30);
+            this.button1.Location = new System.Drawing.Point(246, 30);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 3;
@@ -170,14 +185,14 @@
             // 
             // textBox1
             // 
-            this.textBox1.Location = new System.Drawing.Point(612, 30);
+            this.textBox1.Location = new System.Drawing.Point(327, 30);
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(146, 20);
+            this.textBox1.Size = new System.Drawing.Size(431, 20);
             this.textBox1.TabIndex = 0;
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(450, 30);
+            this.button2.Location = new System.Drawing.Point(165, 30);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(75, 23);
             this.button2.TabIndex = 4;
@@ -188,20 +203,6 @@
             // 
             this.postgresDataSet1.DataSetName = "postgresDataSet";
             this.postgresDataSet1.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema;
-            // 
-            // создатьТипToolStripMenuItem
-            // 
-            this.создатьТипToolStripMenuItem.Name = "создатьТипToolStripMenuItem";
-            this.создатьТипToolStripMenuItem.Size = new System.Drawing.Size(84, 20);
-            this.создатьТипToolStripMenuItem.Text = "Создать тип";
-            this.создатьТипToolStripMenuItem.Click += new System.EventHandler(this.создатьТипToolStripMenuItem_Click);
-            // 
-            // изменитьТипToolStripMenuItem
-            // 
-            this.изменитьТипToolStripMenuItem.Name = "изменитьТипToolStripMenuItem";
-            this.изменитьТипToolStripMenuItem.Size = new System.Drawing.Size(95, 20);
-            this.изменитьТипToolStripMenuItem.Text = "Изменить тип";
-            this.изменитьТипToolStripMenuItem.Click += new System.EventHandler(this.изменитьТипToolStripMenuItem_Click);
             // 
             // Form1
             // 
