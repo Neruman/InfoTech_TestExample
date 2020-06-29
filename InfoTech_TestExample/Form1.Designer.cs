@@ -101,6 +101,7 @@
             this.downloadFileToolStripMenuItem.Name = "downloadFileToolStripMenuItem";
             this.downloadFileToolStripMenuItem.Size = new System.Drawing.Size(95, 20);
             this.downloadFileToolStripMenuItem.Text = "Скачать файл";
+            this.downloadFileToolStripMenuItem.Click += new System.EventHandler(this.downloadFileToolStripMenuItem_Click);
             // 
             // создатьТипToolStripMenuItem
             // 
@@ -128,6 +129,7 @@
             treeNode1});
             this.treeView1.Size = new System.Drawing.Size(155, 428);
             this.treeView1.TabIndex = 1;
+            this.treeView1.Click += new System.EventHandler(this.treeView1_Click);
             this.treeView1.MouseHover += new System.EventHandler(this.treeView1_MouseHover);
             // 
             // button1

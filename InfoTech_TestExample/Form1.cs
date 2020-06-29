@@ -283,23 +283,27 @@ namespace InfoTech_TestExample
             }
             else
             {
-                NodeTag = NodeTag.Remove(0, 5);  //если выделен узел с файлом, то выдаём папку,в которой он находится
-                using (OdbcConnection connection = new OdbcConnection(ConnectionString))
+                try
                 {
-                    //Подключение к БД
-                    connection.Open();
+                    NodeTag = NodeTag.Remove(0, 5);  //если выделен узел с файлом, то выдаём папку,в которой он находится
+                    using (OdbcConnection connection = new OdbcConnection(ConnectionString))
+                    {
+                        //Подключение к БД
+                        connection.Open();
 
-                    //Запрос ID папки, к которой принадлежит выделенный файл
-                    string CommandText =
-                    $"SELECT {quote}FolderID{quote} " +
-                    $"FROM public.{quote}Files{quote}" +
-                    $"  WHERE {quote}FileID{quote} = {Convert.ToInt32(NodeTag)}";
+                        //Запрос ID папки, к которой принадлежит выделенный файл
+                        string CommandText =
+                        $"SELECT {quote}FolderID{quote} " +
+                        $"FROM public.{quote}Files{quote}" +
+                        $"  WHERE {quote}FileID{quote} = {Convert.ToInt32(NodeTag)}";
 
-                    OdbcCommand FolderReaderCommand = new OdbcCommand(CommandText, connection);
-                    object FolderID = FolderReaderCommand.ExecuteScalar();
+                        OdbcCommand FolderReaderCommand = new OdbcCommand(CommandText, connection);
+                        object FolderID = FolderReaderCommand.ExecuteScalar();
 
-                    NodeTag = Convert.ToString(FolderID);
+                        NodeTag = Convert.ToString(FolderID);
+                    }
                 }
+                catch { };
             }
             return NodeTag;
         }
@@ -501,6 +505,117 @@ namespace InfoTech_TestExample
             }
             reader.Close();
             return (Image)new Bitmap(2, 2);
+        }
+
+        public void DownloadFile(OdbcConnection connection)
+        {
+            int selectedID = -1;
+            //определяем ID файла
+            if (GetSelectedNode().Contains("File_") == true)
+            {
+                selectedID = Convert.ToInt32(AskNodeFileID());
+            }
+            else return;
+
+            //определяем, куда сохранять файл.
+            if (saveFileDialog1.ShowDialog() == DialogResult.Cancel)
+                return;
+            // получаем выбранный файл
+            string filename = saveFileDialog1.FileName;
+
+            string CommandText =
+                $"SELECT * " +
+                $"FROM public.{quote}Files{quote}" +
+                $"WHERE {quote}FileID{quote} = '{(int)selectedID}'" +
+                $"ORDER BY {quote}TypeID{quote} ASC ";
+
+            OdbcCommand TypeReaderCommand = new OdbcCommand(CommandText, connection);
+
+            //Вывод информации о типе в текстовое поле
+            OdbcDataReader reader = TypeReaderCommand.ExecuteReader();
+            while (reader.Read())
+            {
+                FileStream fstream;
+                try
+                {
+                    //считываем данные
+                    byte[] FileArray = ((byte[])reader.GetValue(5)); //Content
+
+                    //сохраняем файл
+                    fstream = new FileStream($"{filename}", FileMode.Create, FileAccess.ReadWrite);
+                    fstream.Write(FileArray, 0, FileArray.Length);
+
+                    fstream.Close();
+                }
+                catch (Exception ex)
+                {
+                }
+            }
+            reader.Close();
+        }
+
+        private void downloadFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (OdbcConnection connection = new OdbcConnection(ConnectionString))
+            {
+                connection.Open();
+                DownloadFile(connection);
+            }
+            
+        }
+        public void ShowData(OdbcConnection connection)
+        {
+            int selectedID = -1;
+            //определяем ID файла
+            if (GetSelectedNode().Contains("File_") == true)
+            {
+                selectedID = Convert.ToInt32(AskNodeFileID());
+            }
+            else return;
+
+            string CommandText =
+                $"SELECT * " +
+                $"FROM public.{quote}Files{quote}" +
+                $"WHERE {quote}FileID{quote} = '{(int)selectedID}'" +
+                $"ORDER BY {quote}TypeID{quote} ASC ";
+
+            OdbcCommand TypeReaderCommand = new OdbcCommand(CommandText, connection);
+
+            //Вывод информации о типе в текстовое поле
+            OdbcDataReader reader = TypeReaderCommand.ExecuteReader();
+            while (reader.Read())
+            {
+                FileStream fstream;
+                try
+                {
+                    //считываем данные
+                    object[] variables = new object[6];
+                    reader.GetValues(variables);
+                    byte[] FileArray = ((byte[])reader.GetValue(5)); //Content
+
+                    //отображаем данные
+                    textBox2.Text = Encoding.Default.GetString(FileArray);
+
+                }
+                catch (Exception ex)
+                {
+                }
+            }
+            reader.Close();
+        }
+
+        private void treeView1_Click(object sender, EventArgs e)
+        {
+
+            using (OdbcConnection connection = new OdbcConnection(ConnectionString))
+            {
+                connection.Open();
+                try
+                {
+                    ShowData(connection);
+                }
+                catch (Exception ex){ }
+            }
         }
     }
 }
