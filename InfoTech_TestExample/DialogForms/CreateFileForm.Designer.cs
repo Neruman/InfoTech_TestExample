@@ -67,7 +67,7 @@
             this.button2.TabIndex = 3;
             this.button2.Text = "Отменить";
             this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.button2.Click += new System.EventHandler(this.CancelClick);
             // 
             // button1
             // 
@@ -78,7 +78,7 @@
             this.button1.TabIndex = 2;
             this.button1.Text = "&ОК";
             this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.button1.Click += new System.EventHandler(this.OkClick);
             // 
             // button3
             // 
@@ -89,7 +89,7 @@
             this.button3.TabIndex = 4;
             this.button3.Text = "Обзор";
             this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
+            this.button3.Click += new System.EventHandler(this.UploadButtonClick);
             // 
             // ContentBox
             // 

@@ -8,6 +8,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Data.Odbc;
+using System.IO;
+using InfoTech_TestExample;
+
 
 namespace InfoTech_TestExample.DialogForms
 {
@@ -15,7 +18,7 @@ namespace InfoTech_TestExample.DialogForms
     {
         const string quote = InfoTech_TestExample.Form1.quote;
 
-        string filestring = "";
+        string FileString = "";
 
         private string selectedTypeID = "0";
 
@@ -76,14 +79,13 @@ namespace InfoTech_TestExample.DialogForms
         }
 
 
-        private void button2_Click(object sender, EventArgs e)
+        private void CancelClick(object sender, EventArgs e)
         {
             Close();
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void OkClick(object sender, EventArgs e)
         {
-            string filestring = "";
             using (OdbcConnection connection = new OdbcConnection(ConnectionString))
             {
                 //Подключение к БД
@@ -105,7 +107,7 @@ namespace InfoTech_TestExample.DialogForms
                 $"({quote}FileID{quote},{quote}Caption{quote},{quote}Description{quote},{quote}TypeID{quote}," +
                 $"{quote}FolderID{quote},{quote}Content{quote})" +
                 $"VALUES ({NewID},'{CaptionBox.Text}','{DescriptionBox.Text}','{selectedTypeID}'," +
-                $"'{FolderID}','{filestring}')";
+                $"'{FolderID}','{FileString}')";
 
                 OdbcCommand FileInsertCommand = new OdbcCommand(InsertText, connection);
 
@@ -116,9 +118,24 @@ namespace InfoTech_TestExample.DialogForms
             
         }
 
-        private void button3_Click(object sender, EventArgs e)
+        private void UploadButtonClick(object sender, EventArgs e)
         {
+            //if (openFileDialog1.ShowDialog() == DialogResult.Cancel)
+            //    return;
+            //// получаем выбранный файл
+            //string filename = openFileDialog1.FileName;
+            //// читаем файл в строку
 
+            //using (FileStream fstream = File.OpenRead(filename))
+            //{
+            //    // преобразуем строку в байты
+            //    byte[] FileArray = new byte[fstream.Length];
+            //    // считываем данные
+            //    fstream.Read(FileArray, 0, FileArray.Length);
+            //    FileString = Encoding.Default.GetString(FileArray);
+            //}
+            FileString = form1.TranslateFileToString();
+            ContentBox.Text = FileString;
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)

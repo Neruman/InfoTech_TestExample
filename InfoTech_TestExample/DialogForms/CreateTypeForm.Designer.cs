@@ -28,21 +28,20 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.TypeNameBox = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.button2 = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.FileStringBox = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
-            // textBox1
+            // TypeNameBox
             // 
-            this.textBox1.Location = new System.Drawing.Point(12, 25);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(360, 20);
-            this.textBox1.TabIndex = 0;
+            this.TypeNameBox.Location = new System.Drawing.Point(12, 25);
+            this.TypeNameBox.Name = "TypeNameBox";
+            this.TypeNameBox.Size = new System.Drawing.Size(360, 20);
+            this.TypeNameBox.TabIndex = 0;
             // 
             // label1
             // 
@@ -62,7 +61,7 @@
             this.button2.TabIndex = 3;
             this.button2.Text = "Отменить";
             this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.button2.Click += new System.EventHandler(this.CancelClick);
             // 
             // button1
             // 
@@ -73,7 +72,7 @@
             this.button1.TabIndex = 2;
             this.button1.Text = "&ОК";
             this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.button1.Click += new System.EventHandler(this.OkButtonClick);
             // 
             // button3
             // 
@@ -84,19 +83,15 @@
             this.button3.TabIndex = 4;
             this.button3.Text = "Обзор иконки";
             this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
+            this.button3.Click += new System.EventHandler(this.OpenFileToString);
             // 
-            // textBox2
+            // FileStringBox
             // 
-            this.textBox2.Location = new System.Drawing.Point(12, 52);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.ReadOnly = true;
-            this.textBox2.Size = new System.Drawing.Size(360, 20);
-            this.textBox2.TabIndex = 5;
-            // 
-            // openFileDialog1
-            // 
-            this.openFileDialog1.FileName = "openFileDialog1";
+            this.FileStringBox.Location = new System.Drawing.Point(12, 52);
+            this.FileStringBox.Name = "FileStringBox";
+            this.FileStringBox.ReadOnly = true;
+            this.FileStringBox.Size = new System.Drawing.Size(360, 20);
+            this.FileStringBox.TabIndex = 5;
             // 
             // CreateTypeForm
             // 
@@ -104,12 +99,12 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(384, 124);
             this.ControlBox = false;
-            this.Controls.Add(this.textBox2);
+            this.Controls.Add(this.FileStringBox);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.TypeNameBox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "CreateTypeForm";
             this.ResumeLayout(false);
@@ -119,12 +114,11 @@
 
         #endregion
 
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox TypeNameBox;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.OpenFileDialog openFileDialog1;
+        private System.Windows.Forms.TextBox FileStringBox;
     }
 }

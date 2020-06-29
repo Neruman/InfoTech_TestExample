@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Data.Odbc;
+using System.IO;
+using InfoTech_TestExample;
 
 namespace InfoTech_TestExample.DialogForms
 {
@@ -15,7 +17,7 @@ namespace InfoTech_TestExample.DialogForms
     {
         const string quote = InfoTech_TestExample.Form1.quote;
 
-        string filestring = "";
+        string FileString = "";
 
         private string connectionString;
         public string ConnectionString { get => connectionString; set { connectionString = value; } }
@@ -36,14 +38,13 @@ namespace InfoTech_TestExample.DialogForms
             this.Show();
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void CancelClick(object sender, EventArgs e)
         {
             Close();
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void OkButtonClick(object sender, EventArgs e)
         {
-            string filestring = "";
             using (OdbcConnection connection = new OdbcConnection(ConnectionString))
             {
                 //Подключение к БД
@@ -62,7 +63,7 @@ namespace InfoTech_TestExample.DialogForms
                 //Размещаем новую запись в БД
                 string InsertText =
                 $"INSERT INTO public.{quote}Types{quote} ({quote}TypeID{quote},{quote}Type{quote},{quote}Icon{quote})" +
-                $"VALUES ({NewID},'''{textBox1.Text}''',{filestring})";
+                $"VALUES ({NewID},'''{TypeNameBox.Text}''',{FileString})";
 
                 OdbcCommand FolderInsertCommand = new OdbcCommand(InsertText, connection);
 
@@ -73,9 +74,26 @@ namespace InfoTech_TestExample.DialogForms
             
         }
 
-        private void button3_Click(object sender, EventArgs e)
+        private void OpenFileToString(object sender, EventArgs e)
         {
+            //if (openFileDialog1.ShowDialog() == DialogResult.Cancel)
+            //    return;
+            //// получаем выбранный файл
+            //string filename = openFileDialog1.FileName;
+            //// читаем файл в строку
 
+            //using (FileStream fstream = File.OpenRead(filename))
+            //{
+            //    // преобразуем строку в байты
+            //    byte[] FileArray = new byte[fstream.Length];
+            //    // считываем данные
+            //    fstream.Read(FileArray, 0, FileArray.Length);
+            //    FileString = Encoding.Default.GetString(FileArray);
+            //}
+            FileString = form1.TranslateFileToString();
+            FileStringBox.Text = FileString;
         }
+
+
     }
 }

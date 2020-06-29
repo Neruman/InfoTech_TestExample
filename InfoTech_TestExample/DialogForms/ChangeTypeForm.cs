@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Data.Odbc;
+using System.IO;
+using InfoTech_TestExample;
 
 namespace InfoTech_TestExample.DialogForms
 {
@@ -16,6 +18,7 @@ namespace InfoTech_TestExample.DialogForms
         const string quote = InfoTech_TestExample.Form1.quote;
 
         string FileString = "";
+
         private string connectionString;
         public string ConnectionString { get => connectionString; set { connectionString = value; } }
 
@@ -36,6 +39,9 @@ namespace InfoTech_TestExample.DialogForms
             this.Show();
         }
 
+        /// <summary>
+        /// Создаём список всех доступных расширений для изменения
+        /// </summary>
         private void TypeListConfigure()
         {
             comboBox1.Items.Clear();
@@ -79,10 +85,6 @@ namespace InfoTech_TestExample.DialogForms
                 $"WHERE {quote}Type{quote} = '{(string)comboBox1.SelectedItem}'" +
                 $"ORDER BY {quote}TypeID{quote} ASC ";
 
-                OdbcCommand FolderReaderCommand = new OdbcCommand(CommandText, connection);
-
-                int ChangedTypeID = (int)FolderReaderCommand.ExecuteScalar();
-
                 OdbcCommand TypeReaderCommand = new OdbcCommand(CommandText, connection);
 
                 //Вывод информации о типе в текстовое поле
@@ -90,9 +92,36 @@ namespace InfoTech_TestExample.DialogForms
                 while (reader.Read())
                 {
                     //название типа
-                    textBox1.Text = (string)reader.GetValue(1);
+                    TypeNameBox.Text = (string)reader.GetValue(1);
                     //строковое представление иконки
-                    textBox2.Text = (string)reader.GetValue(2);
+
+                    FileStream fstream;
+                    try
+                    {
+                        object[] values1 = new object[3];
+                         reader.GetValues(values1);
+                        //считываем изображение
+                        FileArray = ((byte[])reader.GetValue(2));
+
+                        FileStringBox.Text = Encoding.Default.GetString(FileArray);
+
+                        //сохраняем изображение во временный файл
+                         fstream = new FileStream($"{Directory.GetCurrentDirectory()}./{(string)values1[1]}.ico",FileMode.Create,FileAccess.ReadWrite);
+                        fstream.Write(FileArray, 0, FileArray.Length);
+                        
+
+                        //выгружаем изображение из временного файла
+                        Bitmap bm = new Bitmap(fstream);// $"{Directory.GetCurrentDirectory()}./{(string)values1[1]}.ico");
+                        pictureBox1.Visible = true;
+                        pictureBox1.Image = (Image)bm;
+                        fstream.Close();
+                    }
+                    catch (Exception ex)
+                    {
+                        try { fstream = new FileStream($"{Directory.GetCurrentDirectory()}./temp.ico", FileMode.Create, FileAccess.ReadWrite); fstream.Close(); } catch { }
+                        FileStringBox.Text = "";
+                        pictureBox1.Visible = false;
+                    }
                 }
                 reader.Close();
             }
@@ -124,16 +153,41 @@ namespace InfoTech_TestExample.DialogForms
                 //Записываем изменения
                 string ChangeTypeCommand =
                 $"UPDATE public.{quote}FileTypes{quote} " +
-                $"SET {quote}Type{quote}  = '{textBox1.Text}' , {quote}Icon{quote} = '{FileString}'" +
+                $"SET {quote}Type{quote}  = '{TypeNameBox.Text}' , {quote}Icon{quote} =  '{FileString}' "  +
                 $"  WHERE {quote}TypeID{quote} = {ChangedTypeID}";
 
                 OdbcCommand TypeReaderCommand = new OdbcCommand(ChangeTypeCommand, connection);
                 object i = TypeReaderCommand.ExecuteNonQuery();
 
                 //Всё готово. Закрываем диалоговое окно
-                Close();
+                
                 
             }
+            Close();
+        }
+        byte[] FileArray;
+        private void OpenFileToString(object sender, EventArgs e)
+        {
+            //if (openFileDialog1.ShowDialog() == DialogResult.Cancel)
+            //    return;
+            //// получаем выбранный файл
+            //string filename = openFileDialog1.FileName;
+            //// читаем файл в строку
+            //FileString = "";
+            //using (FileStream fstream = File.OpenRead(filename))
+            //{
+            //    // преобразуем строку в байты
+            //    FileArray = new byte[fstream.Length];
+
+            //    // считываем данные
+            //    fstream.Read(FileArray, 0, FileArray.Length);
+
+            //    //формируем строку для выгрузки в БД
+            //    FileString = "\\x" + BitConverter.ToString(FileArray).Replace("-", string.Empty);
+            //}
+            FileString = form1.TranslateFileToString();
+            FileStringBox.Text = FileString;
         }
     }
+
 }
